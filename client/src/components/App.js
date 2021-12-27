@@ -21,10 +21,10 @@ class App extends Component {
           <div>
             <Header />
             <Routes >
-              <Route path="/blogs/new" component={BlogNew} />
-              <Route exact path="/blogs/:_id" component={BlogShow} />
-              <Route path="/blogs" component={Dashboard} />
-              <Route path="/" component={Landing} />
+              <Route path="/blogs/new" element={<BlogNew/>} />
+              <Route exact path="/blogs/:_id" element={<BlogShow/>} />
+              <Route path="/blogs" element={<Dashboard/>} />
+              <Route path="/" element={<Landing/>} />
             </Routes >
           </div>
         </BrowserRouter>
