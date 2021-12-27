@@ -1,30 +1,26 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { fetchBlog } from '../../actions';
+import React, {useEffect} from 'react';
+import {useParams} from 'react-router-dom'
+import {fetchBlog} from '../../actions';
+import {useSelector} from "react-redux";
 
-class BlogShow extends Component {
-  componentDidMount() {
-    this.props.fetchBlog(this.props.match.params._id);
-  }
+export default function BlogShow(props) {
 
-  render() {
-    if (!this.props.blog) {
-      return '';
-    }
+    const {_id} = useParams();
 
-    const { title, content } = this.props.blog;
+    useEffect(() => {
+        fetchBlog(_id);
+    }, [_id]);
+
+    const blog = useSelector(({blogs}) => blogs[_id]);
+
+    if (!blog) return '';
+
+    const {title, content} = blog;
 
     return (
-      <div>
-        <h3>{title}</h3>
-        <p>{content}</p>
-      </div>
+        <div>
+            <h3>{title}</h3>
+            <p>{content}</p>
+        </div>
     );
-  }
 }
-
-function mapStateToProps({ blogs }, ownProps) {
-  return { blog: blogs[ownProps.match.params._id] };
-}
-
-export default connect(mapStateToProps, { fetchBlog })(BlogShow);

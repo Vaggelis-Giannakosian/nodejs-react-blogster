@@ -42,9 +42,9 @@ class BlogFormReview extends Component {
   onSubmit(event) {
     event.preventDefault();
 
-    const { submitBlog, history, formValues } = this.props;
+    const { submitBlog, navigate, formValues } = this.props;
 
-    submitBlog(formValues, history);
+    submitBlog(formValues, navigate);
   }
 
   render() {
