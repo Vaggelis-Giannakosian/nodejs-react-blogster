@@ -7,7 +7,7 @@ const client = createClient({
 
 client.connect()
 
-const clearHash = function (hashKey){
+const clearKey = function (hashKey){
     return client.del(
         JSON.stringify(hashKey)
     )
@@ -15,5 +15,5 @@ const clearHash = function (hashKey){
 
 module.exports = {
     client,
-    clearHash
+    clearKey
 }
