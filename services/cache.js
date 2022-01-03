@@ -1,5 +1,5 @@
 const {Query} = require('mongoose')
-const redisClient = require("../services/redis");
+const {client} = require("../services/redis");
 
 
 function formatCacheKey(query) {
@@ -11,8 +11,10 @@ function formatCacheKey(query) {
     )
 }
 
-Query.prototype.cache = function (){
+Query.prototype.cache = function (options = {}){
     this.shouldCache = true;
+    this.hashKey = JSON.stringify(options.key || '')
+
     return this;
 }
 
@@ -25,7 +27,7 @@ Query.prototype.exec = async function(){
 
     const queryCacheKey = formatCacheKey(this)
 
-    const cacheValue = await redisClient.get(queryCacheKey)
+    const cacheValue = await client.hGet(this.hashKey, queryCacheKey)
 
     if (cacheValue) {
         const doc = JSON.parse(cacheValue)
@@ -37,7 +39,7 @@ Query.prototype.exec = async function(){
 
     const result = await exec.apply(this,arguments)
 
-    await redisClient.set(queryCacheKey,JSON.stringify(result),{EX: 60})
+    await client.hSet(this.hashKey, queryCacheKey,JSON.stringify(result),{EX: 60})
 
     return result
 }

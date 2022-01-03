@@ -7,4 +7,13 @@ const client = createClient({
 
 client.connect()
 
-module.exports = client;
+const clearHash = function (hashKey){
+    return client.del(
+        JSON.stringify(hashKey)
+    )
+}
+
+module.exports = {
+    client,
+    clearHash
+}
