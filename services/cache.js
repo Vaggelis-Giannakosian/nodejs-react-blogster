@@ -11,8 +11,17 @@ function formatCacheKey(query) {
     )
 }
 
+Query.prototype.cache = function (){
+    this.shouldCache = true;
+    return this;
+}
+
 const exec = Query.prototype.exec;
 Query.prototype.exec = async function(){
+
+    if(!this.shouldCache){
+        return exec.apply(this,arguments);
+    }
 
     const queryCacheKey = formatCacheKey(this)
 
@@ -28,7 +37,7 @@ Query.prototype.exec = async function(){
 
     const result = await exec.apply(this,arguments)
 
-    await redisClient.set(queryCacheKey,JSON.stringify(result))
+    await redisClient.set(queryCacheKey,JSON.stringify(result),{EX: 60})
 
     return result
 }
