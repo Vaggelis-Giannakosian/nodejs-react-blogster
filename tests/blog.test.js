@@ -1,35 +1,35 @@
 const Page = require('./helpers/page')
 let page;
 
-beforeEach(async ()=>{
+beforeEach(async () => {
     page = await Page.build()
     await page.goto('http://localhost:3000/');
 })
 
-afterEach(async ()=>{
+afterEach(async () => {
     await page.close()
 })
 
-describe('When logged in',()=>{
+describe('When logged in', () => {
 
-    beforeEach(async()=>{
+    beforeEach(async () => {
         await page.login();
         await page.waitForSelector('a.btn-floating.red');
         await page.click('a.red')
     })
 
-    test('Can see blog create form',async ()=>{
+    test('Can see blog create form', async () => {
         const label = await page.getContentsOf('form .title label')
         expect(label).toEqual('Blog Title')
     })
 
-    describe('And using invalid inputs',()=>{
+    describe('And using invalid inputs', () => {
 
-        beforeEach(async()=>{
+        beforeEach(async () => {
             await page.click('form button[type="submit"]')
         })
 
-        test('The form shows an error message',async ()=>{
+        test('The form shows an error message', async () => {
             const titleErrorMessage = await page.$('.title > .red-text');
             expect(titleErrorMessage).not.toBeNull();
 
@@ -45,19 +45,19 @@ describe('When logged in',()=>{
     })
 
 
-    describe('And using invalid inputs',()=>{
-        beforeEach(async()=>{
-            await page.type('.title input','Another test blog');
+    describe('And using invalid inputs', () => {
+        beforeEach(async () => {
+            await page.type('.title input', 'Another test blog');
             await page.type('.content input', 'Test blog content');
             await page.click('form button[type="submit"]')
         })
 
-        test('The user is redirected to review screen',async ()=>{
+        test('The user is redirected to review screen', async () => {
             const titleErrorMessage = await page.getContentsOf('form h5');
             expect(titleErrorMessage).toEqual('Please confirm your entries')
         })
 
-        test('A new blog post is added to Blog index screen',async ()=>{
+        test('A new blog post is added to Blog index screen', async () => {
             await page.click('form button.green')
             await page.waitForNavigation()
 
@@ -69,6 +69,39 @@ describe('When logged in',()=>{
             const postContent = await page.getContentsOf('.card-content > p')
             expect(postContent).toEqual('Test blog content')
         })
+    })
+
+})
+
+describe('When not logged in', () => {
+
+    test('Cannot create new blog post', async () => {
+        const result = await page.evaluate(() => {
+            return fetch("/api/blogs", {
+                method: "POST",
+                credentials: 'same-origin',
+                headers:{
+                    'Content-Type' : 'application/json'
+                },
+                body: JSON.stringify({title: 'Title', content: 'Content'}),
+            }).then(res => res.json())
+        });
+
+        expect(result.error).toEqual('You must log in!')
+    })
+
+    test('Cannot request blogs list', async () => {
+        const result = await page.evaluate(() => {
+            return fetch("/api/blogs", {
+                method: "GET",
+                credentials: 'same-origin',
+                headers:{
+                    'Content-Type' : 'application/json'
+                }
+            }).then(res => res.json())
+        });
+
+        expect(result.error).toEqual('You must log in!')
     })
 
 })
