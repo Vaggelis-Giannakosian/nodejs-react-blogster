@@ -75,33 +75,24 @@ describe('When logged in', () => {
 
 describe('When not logged in', () => {
 
-    test('Cannot create new blog post', async () => {
-        const result = await page.evaluate(() => {
-            return fetch("/api/blogs", {
-                method: "POST",
-                credentials: 'same-origin',
-                headers:{
-                    'Content-Type' : 'application/json'
-                },
-                body: JSON.stringify({title: 'Title', content: 'Content'}),
-            }).then(res => res.json())
-        });
+    const actions = [
+        {
+            method: "get",
+            path: "/api/blogs",
+        },
+        {
+            method: "post",
+            path: "/api/blogs",
+            data: {title: 'Title', content: 'Content'}
+        }
+    ]
 
-        expect(result.error).toEqual('You must log in!')
-    })
+    test('Blog related actions are prohibited', async () => {
+        const responses = await page.execRequests(actions)
 
-    test('Cannot request blogs list', async () => {
-        const result = await page.evaluate(() => {
-            return fetch("/api/blogs", {
-                method: "GET",
-                credentials: 'same-origin',
-                headers:{
-                    'Content-Type' : 'application/json'
-                }
-            }).then(res => res.json())
-        });
-
-        expect(result.error).toEqual('You must log in!')
+        responses.forEach(response => {
+            expect(response).toEqual({error:'You must log in!'})
+        })
     })
 
 })
