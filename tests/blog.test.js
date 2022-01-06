@@ -45,7 +45,7 @@ describe('When logged in', () => {
     })
 
 
-    describe('And using invalid inputs', () => {
+    describe('And using valid inputs', () => {
         beforeEach(async () => {
             await page.type('.title input', 'Another test blog');
             await page.type('.content input', 'Test blog content');
