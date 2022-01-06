@@ -7,11 +7,11 @@
     "setupFilesAfterEnv": ["./tests/setup.js"]
   },
   "scripts": {
-    "start": "nodemon index.js",
-    "server": "nodemon index.js --ignore tests",
+    "start": "node index.js",
+    "server": "node index.js --ignore tests",
     "client": "npm run start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "build": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client",
+    "build": "npm install --prefix client && npm run build --prefix client",
     "heroku-postbuild": "npm run build",
     "test": "jest"
   },

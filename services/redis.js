@@ -1,8 +1,9 @@
 const {createClient} = require('redis');
+const keys = require('../config/keys')
 
 const client = createClient({
-    host:'localhost',
-    port: 6379
+    host: keys.redis.host,
+    port: keys.redis.port
 })
 
 client.connect()
