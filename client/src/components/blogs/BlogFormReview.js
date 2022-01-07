@@ -60,7 +60,7 @@ class BlogFormReview extends Component {
                 <h5>Please confirm your entries</h5>
                 {this.renderFields()}
 
-                <div style={{'margin-bottom': '25px'}}>
+                <div style={{marginBottom: '25px'}}>
                     <h5>Add an image</h5>
                     <input type="file"
                            accept="images/*"

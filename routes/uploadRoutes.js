@@ -15,7 +15,7 @@ module.exports = app => {
 
         const url = await s3.getSignedUrlPromise('putObject', {
             Bucket: 'my-bucket',
-            ContentType: 'jpeg',
+            ContentType: 'image/jpeg',
             Key: key
         })
 

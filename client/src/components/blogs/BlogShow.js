@@ -15,12 +15,19 @@ export default function BlogShow(props) {
 
     if (!blog) return '';
 
-    const {title, content} = blog;
+    const {title, content, imageUrl} = blog;
+
+    function renderImage() {
+        return imageUrl
+            ? <img src={imageUrl} alt=""/>
+            : ''
+    }
 
     return (
         <div>
             <h3>{title}</h3>
             <p>{content}</p>
+            {renderImage()}
         </div>
     );
 }
